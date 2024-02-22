@@ -1,10 +1,11 @@
 import streamlit as st
-from selenium import webdriver
-#from seleniumbase import drivers
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-from webdriver_manager.chrome import ChromeDriverManager
+
+with st.echo():
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.action_chains import ActionChains
+    from webdriver_manager.chrome import ChromeDriverManager
 import time
 from winotify import Notification
 from io import StringIO
