@@ -1,4 +1,5 @@
 import streamlit as st
+import subprocess
 
 with st.echo():
     from selenium import webdriver
