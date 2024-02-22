@@ -1,5 +1,4 @@
 import streamlit as st
-import pyperclip
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
@@ -72,9 +71,7 @@ if st.button('Iniciar Automação'):
         nav.find_element('xpath', '// *[ @ id = "side"] / div[1] / div / div[2] / div[2] / div / div[1] / p').send_keys(Keys.ENTER)
 
         # Escrever a mensagem para nós mesmos
-
-        pyperclip.copy(mensagem)
-        #nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.CONTROL + "V")
+        
         nav.find_element('xpath','// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(mensagem)
         time.sleep(2)
         nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.ENTER)
