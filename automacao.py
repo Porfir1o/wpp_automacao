@@ -1,6 +1,6 @@
 import streamlit as st
-#from selenium import webdriver
-from seleniumbase import drivers
+from selenium import webdriver
+#from seleniumbase import drivers
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -56,11 +56,11 @@ if st.button('Iniciar Automação'):
         if len(contatos) == 0:
             lista_contatos = import_contatos
 
-        options = drivers.ChromeOptions()
+        options = webdriver.ChromeOptions()
         options.add_experimental_option("detach", True)
 
         service = Service(ChromeDriverManager().install())
-        nav = drivers(service=service, options=options)
+        nav = webdriver(service=service, options=options)
         nav.get("https://web.whatsapp.com")
         time.sleep(30)
 
