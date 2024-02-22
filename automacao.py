@@ -1,5 +1,6 @@
 import streamlit as st
-from selenium import webdriver
+#from selenium import webdriver
+from seleniumbase import drivers
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -55,11 +56,11 @@ if st.button('Iniciar Automação'):
         if len(contatos) == 0:
             lista_contatos = import_contatos
 
-        options = webdriver.ChromeOptions()
+        options = drivers.ChromeOptions()
         options.add_experimental_option("detach", True)
 
         service = Service(ChromeDriverManager().install())
-        nav = webdriver.Chrome(service=service, options=options)
+        nav = drivers(service=service, options=options)
         nav.get("https://web.whatsapp.com")
         time.sleep(30)
 
@@ -71,7 +72,8 @@ if st.button('Iniciar Automação'):
         nav.find_element('xpath', '// *[ @ id = "side"] / div[1] / div / div[2] / div[2] / div / div[1] / p').send_keys(Keys.ENTER)
 
         # Escrever a mensagem para nós mesmos
-        
+
+        #nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.CONTROL + "V")
         nav.find_element('xpath','// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(mensagem)
         time.sleep(2)
         nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.ENTER)
