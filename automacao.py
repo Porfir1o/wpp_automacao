@@ -39,6 +39,8 @@ if len(contatos) > 0:
     contatos = contatos.replace('  ', ' ')
     lista_contatos = contatos.split(", ")
 
+st.link_button("Go to wpp", "https://web.whatsapp.com/")
+
 if st.button('Iniciar Automação'):
     if len(lista_contatos) > 0 and len(import_contatos) > 0:
         st.write("Não é possivel inserir a lista de contatos e importar uma lista com contatos. Escolha apenas uma opção!")
