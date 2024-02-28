@@ -1,14 +1,8 @@
+import pyautogui
 import streamlit as st
-import subprocess
-
-with st.echo():
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.common.keys import Keys
-    from selenium.webdriver.common.action_chains import ActionChains
-    from webdriver_manager.chrome import ChromeDriverManager
-import time
-from winotify import Notification
+from urllib.parse import quote
+import webbrowser
+from time import sleep
 from io import StringIO
 import pandas as pd
 
@@ -24,8 +18,7 @@ mensagem = ''
 lista_contatos = ''
 import_contatos = ''
 
-
-# verifica se foi importação via arquivo
+# Importa o arquivo de contatos
 if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
 
@@ -38,6 +31,7 @@ if uploaded_file is not None:
 
     import_contatos = import_contatos.tolist()
 
+# Tratamento dos inputs
 if len(texto) > 0:
     mensagem = texto
 
@@ -55,113 +49,26 @@ if st.button('Iniciar Automação'):
     else:
         st.write("Automação Iniciada")
 
-        if len(contatos) == 0:
-            lista_contatos = import_contatos
+    if len(contatos) == 0:
+        lista_contatos = import_contatos
 
-        options = webdriver.ChromeOptions()
-        options.add_experimental_option("detach", True)
+    for numero in lista_contatos:
+        contato = numero
 
-        service = Service(ChromeDriverManager().install())
-        nav = webdriver(service=service, options=options)
-        nav.get("https://web.whatsapp.com")
-        time.sleep(30)
+        link_mensagem_wpp = f'https://web.whatsapp.com/send?phone={contato}&text={quote(texto)}'
+        webbrowser.open(link_mensagem_wpp)
+        sleep(5)
 
-        # mensagem
+        try:
 
-        nav.find_element('xpath', '//*[@id="side"]/div[1]/div/div[2]/button/div[2]/span').click()
-        nav.find_element('xpath', '// *[ @ id = "side"] / div[1] / div / div[2] / div[2] / div / div[1] / p').send_keys("You")
-        time.sleep(2)
-        nav.find_element('xpath', '// *[ @ id = "side"] / div[1] / div / div[2] / div[2] / div / div[1] / p').send_keys(Keys.ENTER)
+            pyautogui.getWindowsWithTitle("WhatsApp")[0].maximize()
+            sleep(3)
+            pyautogui.click(x=1545, y=799)
+            sleep(3)
+            pyautogui.hotkey('ctrl', 'w')
+            sleep(3)
 
-        # Escrever a mensagem para nós mesmos
-
-        #nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.CONTROL + "V")
-        nav.find_element('xpath','// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(mensagem)
-        time.sleep(2)
-        nav.find_element('xpath', '// *[ @ id = "main"] / footer / div[1] / div / span[2] / div / div[2] / div[1] / div / div[1] / p').send_keys(Keys.ENTER)
-        time.sleep(1)
-
-        qtd_contatos = len(lista_contatos)
-
-        if qtd_contatos % 5 == 0:
-            qtde_blocos = qtd_contatos / 5
-        else:
-            qtde_blocos = int(qtd_contatos / 5) + 1
-
-        for i in range(qtde_blocos):
-            inicial = i * 5
-            final = (i + 1) * 5
-            lista_enviar = lista_contatos[inicial:final]
-
-            # seleciona a mensagem que vai enviar e abre a caixa de emcaminhar
-
-            lista_elementos = nav.find_elements('class name', '_2AOIt')
-
-            for item in lista_elementos:
-                mensagem = mensagem.replace("\n", "")
-                texto = item.text.replace("\n", "")
-                if mensagem in texto:
-                    elemento = item
-            
-            ActionChains(nav).move_to_element(elemento).perform()
-            elemento.find_element('class name', '_3u9t-').click()
-            time.sleep(1)
-            nav.find_element('xpath', '// *[ @ id = "app"] / div / span[5] / div / ul / div / li[4] / div').click()
-            time.sleep(1)
-            nav.find_element('xpath', '//*[@id="main"]/span[2]/div/button[4]/span').click()
-            time.sleep(1)
-
-            for nome in lista_enviar:
-                # seleciona os 5 contatos para enviar
-                
-                nav.find_element('xpath', '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div[2]/div[2]/div/div[1]/p').send_keys(nome)
-                time.sleep(1.5)
-
-                # Verifica se o destinário existe na lista de envio
-                lista_elementos_user_not_found = nav.find_elements('class name', 'hp667wtd')
-
-                user = ''
-
-                for not_found in lista_elementos_user_not_found:
-                    user = not_found.text.replace("\n", "")
-
-                nav.find_element('xpath', '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div[2]/div[2]/div/div[1]/p').send_keys(Keys.ENTER)
-                time.sleep(1.5)
-
-                if user == 'No chats, contacts or messages found':
-                    nav.find_element('xpath', '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div[2]/div[2]/div/div[1]/p').send_keys(Keys.CONTROL + "A")
-                    nav.find_element('xpath', '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div[2]/div[2]/div/div[1]/p').send_keys(Keys.BACKSPACE)
-                    time.sleep(1.5)
-
-                    st.write(f"Destinatário informado não existe na sua lista de contatos, favor verificar: {nome}")
-
-                else:
-
-                    nav.find_element('xpath', '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div[2]/div[2]/div/div[1]/p').send_keys(Keys.BACKSPACE)
-                    time.sleep(1.5)
-            try:
-                nav.find_element('xpath', '// *[ @ id = "app"] / div / span[2] / div / div / div / div / div / div / div / span / div / div / div').click()
-                time.sleep(3)
-            except:
-                pass
-
-        if user == 'No chats, contacts or messages found':
-            try:
-                nav.find_element('xpath', '// *[ @ id = "app"] / div / span[2] / div / div / div / div / div / div / div / header / div / div[1] / div').click()
-            except:
-                pass
-
-            notificacao = Notification(app_id='Automação do Whatsapp',
-                                       title='Notificação da Automação',
-                                       msg='A Automação finalizou, porém existe destinatários que não foram encotrados. Verique os nomes na tela do sistema.',
-                                       duration="long",
-                                       icon="C:\\Users\\Porfirio\\PycharmProjects\\GUPPE\\wpp\\logo.png")
-            notificacao.show()
-
-        else:
-            notificacao = Notification(app_id='Automação do Whatsapp',
-                                       title='Notificação da Automação',
-                                       msg='A Automação finalizou',
-                                       duration="long",
-                                       icon="C:\\Users\\Porfirio\\PycharmProjects\\GUPPE\\wpp\\logo.png")
-            notificacao.show()
+        except:
+            st.write(f'Não foi possivel mandar mensagem para o contato: {contato}')
+            #with open('erros.csv', 'a', newline='', encoding='uft-8') as arquivo:
+                #arquivo.write(f'{contato}')
