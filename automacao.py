@@ -1,4 +1,4 @@
-#import pyautogui
+import pyautogui
 import streamlit as st
 from urllib.parse import quote
 import webbrowser
