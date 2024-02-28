@@ -58,17 +58,3 @@ if st.button('Iniciar Automação'):
         link_mensagem_wpp = f'https://web.whatsapp.com/send?phone={contato}&text={quote(texto)}'
         webbrowser.open(link_mensagem_wpp)
         sleep(5)
-
-        try:
-
-            pyautogui.getWindowsWithTitle("WhatsApp")[0].maximize()
-            sleep(3)
-            pyautogui.click(x=1545, y=799)
-            sleep(3)
-            pyautogui.hotkey('ctrl', 'w')
-            sleep(3)
-
-        except:
-            st.write(f'Não foi possivel mandar mensagem para o contato: {contato}')
-            #with open('erros.csv', 'a', newline='', encoding='uft-8') as arquivo:
-                #arquivo.write(f'{contato}')
