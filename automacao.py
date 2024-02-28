@@ -56,5 +56,5 @@ if st.button('Iniciar Automação'):
         contato = numero
 
         link_mensagem_wpp = f'https://web.whatsapp.com/send?phone={contato}&text={quote(texto)}'
-        webbrowser.open(link_mensagem_wpp)
+        webbrowser.open_new_tab(link_mensagem_wpp)
         sleep(5)
